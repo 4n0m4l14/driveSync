@@ -13,13 +13,15 @@ echo "========================================" >> "$LOG_FILE"
 echo "Starting backup at $(date)" >> "$LOG_FILE"
 
 # Check if rclone is installed
-if ! command -v rclone &> /dev/null; then
-    echo "Error: rclone is not installed." >> "$LOG_FILE"
+RCLONE_BIN="/usr/bin/rclone"
+
+if [ ! -x "$RCLONE_BIN" ]; then
+    echo "Error: rclone not found at $RCLONE_BIN" >> "$LOG_FILE"
     exit 1
 fi
 
 # Run synchronization
-if rclone sync "$SOURCE_DIR" "$REMOTE_NAME:$REMOTE_DIR" --log-file "$LOG_FILE" --log-level INFO; then
+if "$RCLONE_BIN" sync "$SOURCE_DIR" "$REMOTE_NAME:$REMOTE_DIR" --log-file "$LOG_FILE" --log-level INFO; then
     echo "Backup completed successfully at $(date)" >> "$LOG_FILE"
 else
     echo "Backup FAILED at $(date)" >> "$LOG_FILE"
