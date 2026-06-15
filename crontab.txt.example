@@ -1,0 +1,7 @@
+# Environment variables for cron
+SHELL=/bin/bash
+PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
+DRIVESYNC_DIR="/home/usuario/driveSync"
+
+# Run backup script daily at 16:30
+30 16 * * * $DRIVESYNC_DIR/backup_documentos.sh

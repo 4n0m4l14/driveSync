@@ -1,14 +1,24 @@
 #!/bin/bash
 
-# Configuration
-SOURCE_DIR="/home/anomalia/Documentos"
-REMOTE_NAME="gdrive"
-REMOTE_DIR="Backup_Documentos"
-LOG_FILE="/home/anomalia/driveSync/backup.log"
+# Load environment variables from .env file
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+if [ -f "$SCRIPT_DIR/.env" ]; then
+    source "$SCRIPT_DIR/.env"
+else
+    echo "Error: .env file not found at $SCRIPT_DIR/.env" >&2
+    exit 1
+fi
 
-# Encryption flag (set to true to enable client-side encryption)
-ENCRYPT=false
-CRYPT_REMOTE_NAME="gdrive_crypt"
+# Validate required configuration variables
+if [ -z "$SOURCE_DIR" ] || [ -z "$REMOTE_NAME" ] || [ -z "$REMOTE_DIR" ] || [ -z "$LOG_FILE" ]; then
+    echo "Error: Missing required variables in .env file (SOURCE_DIR, REMOTE_NAME, REMOTE_DIR, LOG_FILE must be set)." >&2
+    exit 1
+fi
+
+if [ "$ENCRYPT" = "true" ] && [ -z "$CRYPT_REMOTE_NAME" ]; then
+    echo "Error: ENCRYPT is set to true but CRYPT_REMOTE_NAME is missing in .env file." >&2
+    exit 1
+fi
 
 # Ensure log directory exists
 mkdir -p "$(dirname "$LOG_FILE")"
